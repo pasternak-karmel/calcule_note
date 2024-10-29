@@ -1,11 +1,11 @@
-import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, pgTable, text } from "drizzle-orm/pg-core";
 
 import { createInsertSchema } from "drizzle-zod";
 
 export const UserRoleEnum = {
   ADMIN: "admin",
   USER: "user",
-  TRADUCTEUR: "traducteur",
+  PROFESSEUR: "professeur",
 };
 
 export type UserRole = (typeof UserRoleEnum)[keyof typeof UserRoleEnum];
@@ -15,14 +15,11 @@ export const users = pgTable("user", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
-  email: text("email").unique(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
-  image: text("image"),
+  username: text("username").unique(),
   password: text("password"),
-  salt: text("salt"),
   role: text("role").notNull().default("user"),
   two_factor_secret: text("two_factor_secret"),
-  two_factor_enabled: boolean("two_factor_enabled").default(true),
+  two_factor_enabled: boolean("two_factor_enabled").default(false),
 });
 
 export const InsertUserSchema = createInsertSchema(users);

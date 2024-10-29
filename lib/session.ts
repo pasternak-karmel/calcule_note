@@ -1,3 +1,4 @@
+"use server";
 import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
@@ -17,7 +18,6 @@ export async function createSession(userId: string) {
 }
 
 export async function deleteSession() {
-  //   cookies().delete("session");
   const cookieStore = await cookies();
   cookieStore.delete("session");
 }
@@ -43,5 +43,33 @@ export async function decrypt(session: string | undefined = "") {
     return payload;
   } catch (error) {
     console.log("Failed to verify session", error);
+  }
+}
+
+export async function getUser() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("session")?.value;
+
+  if (!session) {
+    return null;
+  }
+
+  try {
+    const { payload } = await jwtVerify(session, encodedKey, {
+      algorithms: ["HS256"],
+    });
+
+    const {  expiresAt } = payload;
+    // const { userId, expiresAt } = payload;
+
+    if (new Date(expiresAt as Date) < new Date()) {
+      return null;
+    }
+
+    // return { userId };
+    return payload;
+  } catch (error) {
+    console.log("Failed to verify session", error);
+    return null;
   }
 }
