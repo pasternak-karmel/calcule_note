@@ -11,9 +11,9 @@ import {
   SquareTerminal,
 } from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -23,12 +23,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { getUser } from "@/lib/session";
+import { JWTPayload } from "jose";
 
-let  role= "admin"
-  role="etudiant"
-  role= "prof"
- 
- 
 const data = {
   user: {
     name: "shadcn",
@@ -41,19 +38,16 @@ const data = {
       url: "#",
       icon: SquareTerminal,
       isActive: true,
-      
     },
     {
       title: "Professeur",
       url: "/dashboard/admin/professeur",
       icon: Bot,
-      
     },
     {
       title: "Struture des classes",
       url: "#",
       icon: BookOpen,
-      
     },
     {
       title: "Bulletin",
@@ -75,7 +69,7 @@ const data = {
       url: "#",
       icon: SquareTerminal,
       isActive: true,
-          }
+    },
   ],
   navSecondary: [
     {
@@ -89,9 +83,25 @@ const data = {
       icon: Send,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [user, setUser] = React.useState<JWTPayload | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getUser();
+        setUser(userData);
+      } catch (err) {
+        setError("Failed to fetch user");
+        console.error("Error fetching user:", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -112,9 +122,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {role==="prof" && <NavMain items={data.navProf} />}
-        {role==="admin" && <NavMain items={data.navMain} />}
-        {role==="etudiant" && <NavMain items={data.navEtudiant} />}
+        {error && <p>{error}</p>}
+        {user?.role === "prof" && <NavMain items={data.navProf} />}
+        {user?.role === "admin" && <NavMain items={data.navMain} />}
+        {user?.role === "etudiant" && <NavMain items={data.navEtudiant} />}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

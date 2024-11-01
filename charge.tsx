@@ -8,7 +8,7 @@ gestion des rôles utilisateur (admin, proffesseur, étudiant)
 -admin 
     -add professeur
     -ajoute les étudiants
-    -il gere le systeme de clase (ue, ec, note, credit)
+    -il gere le systeme de classe (ue, ec, note, credit)
     -cree le bulletin (pdf) 
 
 -professeur
@@ -22,12 +22,12 @@ gestion des rôles utilisateur (admin, proffesseur, étudiant)
 
 timeline du projet
 
--inscription et connexion pages
+-inscription et connexion pages (done)
     -
 -admin
     -Information de connexion (etudiant professeur)
     -gestion de la structure de lecole
-        -les classes (LMD)
+        -les classes (LMD) (jennifer)
         -Ue
         -eu
         -credit
