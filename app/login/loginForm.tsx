@@ -8,7 +8,7 @@ export function LoginForm() {
   const [state, loginAction] = useActionState(login, undefined);
 
   return (
-<div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-300 to-purple-400 bg-opacity-80">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100"> {/* Fond gris clair ici */}
       <form
         action={loginAction}
         className="flex flex-col items-center p-6 bg-white shadow-lg rounded-lg max-w-sm w-full gap-4"
