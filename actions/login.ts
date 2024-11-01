@@ -1,9 +1,14 @@
 "use server";
 
 import * as z from "zod";
+import bcrypt from "bcryptjs";
 
 import { redirect } from "next/navigation";
 import { createSession } from "@/lib/session";
+import { LoginSchema } from "@/schemas";
+import { getUserByEmail } from "@/data/user";
+
+const domain = process.env.DOMAIN;
 
 export const login = async (
   values: z.infer<typeof LoginSchema>,
@@ -19,9 +24,11 @@ export const login = async (
 
   const existingUser = await getUserByEmail(email);
 
-  if (!existingUser || !existingUser.email || !existingUser.password) {
+  if (!existingUser || !existingUser.username || !existingUser.password) {
     return { error: "Email does not exist!" };
   }
+
+  const passwordsMatch = await bcrypt.compare(password, existingUser.password);
 
   // if (existingUser.two_factor_enabled && existingUser.email) {
   //   if (code) {
@@ -66,10 +73,15 @@ export const login = async (
   //   }
   // }
 
-  try {
-    await createSession("");
+  if (!passwordsMatch) return { error: "Wrong password !" };
 
-    redirect("/dashboard"); //callbackUrl
+  try {
+    await createSession(existingUser.id);
+
+    if (!callbackUrl) {
+      redirect("/dashboard");
+    }
+    redirect(`${domain}/${callbackUrl}`);
     // return { success: "Logged succesufuly" };
   } catch (error) {
     // return { error: "Something went wrong!" };
