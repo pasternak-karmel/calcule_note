@@ -37,7 +37,7 @@ export async function login(prevState: any, formData: FormData) {
     };
   }
 
-  await createSession(testUser.id, "etudiant");
+  await createSession(testUser.id, "admin");
 
   redirect("/dashboard");
 }

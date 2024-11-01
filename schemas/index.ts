@@ -83,29 +83,7 @@ export const CreateTraductionSchema = z
   .object({
     nom: z.string({
       message: "Veuillez entrez votre nom",
-    }),
-    prenom: z.string({
-      message: "Veuillez entrez votre prenom",
-    }),
-    email: z
-      .string({
-        message: "email required",
-      })
-      .email({
-        message: "Entrez un mail valide",
-      }),
-    fichier: z.string().optional(),
-    montant: z.number().optional(),
-    traduire_de: z.enum(["français", "anglais", "arabe", "espagnol"], {
-      message: "Veuillez sélectionnez la langue d'origine",
-    }),
-    traduire_pour: z.enum(["français", "anglais", "arabe", "espagnol"], {
-      message: "Veuillez sélectionnez la langue traduction",
-    }),
-  })
-  .refine((data) => data.traduire_de !== data.traduire_pour, {
-    message: "Les langues d'origine et de traduction doivent être différentes",
-    path: ["traduire_pour"],
+    })
   });
 
 export const meLivrer = z.object({

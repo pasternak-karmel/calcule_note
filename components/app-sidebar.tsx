@@ -32,7 +32,12 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
+  navMain: [ 
+    {
+      title: "Struture des classes",
+      url: "/dashboard/classe",
+      icon: BookOpen,
+    },
     {
       title: "Etudiants",
       url: "#",
@@ -44,11 +49,7 @@ const data = {
       url: "/dashboard/admin/professeur",
       icon: Bot,
     },
-    {
-      title: "Struture des classes",
-      url: "#",
-      icon: BookOpen,
-    },
+   
     {
       title: "Bulletin",
       url: "#",
