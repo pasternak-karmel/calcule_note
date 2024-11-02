@@ -74,7 +74,7 @@ export async function updateCourse(
       .where(eq(ec.id, courseId))
       .returning();
 
-    revalidatePath("/[classId]");
+    // revalidatePath("/[classId]");
     return { data: updatedEC };
   } catch (error) {
     console.error("Error updating course:", error);

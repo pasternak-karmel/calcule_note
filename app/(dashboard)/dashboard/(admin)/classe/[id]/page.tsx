@@ -1,180 +1,30 @@
-// "use client";
-
-// import React, { useState } from "react";
-// import { useCourses } from "@/hooks/useCourses";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { Plus, Trash2, Edit2, Save, X, Loader2 } from "lucide-react";
-// import { CourseWithUE } from "@/db/schema";
-
-// export default function ClasseId() {
-//   const [editingCourse, setEditingCourse] = useState<CourseWithUE | null>(null);
-  
-//   const {
-//     courses,
-//     isLoading,
-//     isError,
-//     addCourse,
-//     updateCourse,
-//     deleteCourse,
-//     isAddingCourse,
-//     isUpdatingCourse,
-//     isDeletingCourse,
-//   } = useCourses();
-
-//   if (isLoading) {
-//     return (
-//       <div className="flex items-center justify-center h-screen">
-//         <Loader2 className="h-8 w-8 animate-spin" />
-//       </div>
-//     );
-//   }
-
-//   if (isError) {
-//     return (
-//       <div className="flex items-center justify-center h-screen text-red-500">
-//         Error loading courses. Please try again later.
-//       </div>
-//     );
-//   }
-
-//   const handleAddCourse = (semesterId: string) => {
-//     const newCourse = {
-//       codeUE: "",
-//       codeEC: "",
-//       contenu: "",
-//       enseignement: "",
-//       cours: 0,
-//       tpTd: 0,
-//       sp: 0,
-//       tpe: 0,
-//       ctt: 0,
-//       cect: 0,
-//       cc: false,
-//       et: false,
-//       ccEt: false,
-//       professor: "",
-//       classId,
-//     };
-
-//     addCourse({ semesterId, courseData: newCourse });
-//   };
-
-//   const handleSaveCourse = async () => {
-//     if (!editingCourse) return;
-
-//     await updateCourse({
-//       courseId: editingCourse.id,
-//       courseData: editingCourse,
-//     });
-
-//     setEditingCourse(null);
-//   };
-
-//   const handleDeleteCourse = async (courseId: string) => {
-//     await deleteCourse(courseId);
-//   };
-
-//   return (
-//     <>
-    
-//     </>
-//   );
-// }
-
 "use client";
-
-import React, { useState } from "react";
+import { useState } from "react";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCourses } from "@/hooks/useCourses";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, Edit2, Save, X, Loader2 } from "lucide-react";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { CourseWithUE } from "@/db/schema";
+import { Loader2 } from "lucide-react";
 
-export default function ClasseId() {
-  const [editingCourse, setEditingCourse] = useState<CourseWithUE | null>(null);
-  const [newCourse, setNewCourse] = useState<CourseWithUE>({
-    id: "",
-    codeUE: "",
-    codeEC: "",
-    contenu: "",
-    enseignement: "",
-    cours: 0,
-    tpTd: 0,
-    sp: 0,
-    tpe: 0,
-    ctt: 0,
-    cect: 0,
-    cc: false,
-    et: false,
-    ccEt: false,
-    professor: "",
-  });
-
-  const {
-    courses,
-    isLoading,
-    isError,
-    addCourse,
-    updateCourse,
-    deleteCourse,
-    isAddingCourse,
-    isUpdatingCourse,
-    isDeletingCourse,
-  } = useCourses();
-
-  const handleAddCourse = (semesterId: string) => {
-    addCourse({ semesterId, courseData: newCourse });
-    setNewCourse({
-      id: "",
-      codeUE: "",
-      codeEC: "",
-      contenu: "",
-      enseignement: "",
-      cours: 0,
-      tpTd: 0,
-      sp: 0,
-      tpe: 0,
-      ctt: 0,
-      cect: 0,
-      cc: false,
-      et: false,
-      ccEt: false,
-      professor: "",
-    });
-  };
-
-  const handleSaveCourse = async () => {
-    if (!editingCourse) return;
-
-    await updateCourse({
-      courseId: editingCourse.id,
-      courseData: editingCourse,
-    });
-    setEditingCourse(null);
-  };
-
-  const handleDeleteCourse = async (courseId: string) => {
-    await deleteCourse(courseId);
-  };
+export default function CourseManagement() {
+  const { courses, isLoading, isError, updateCourse } = useCourses();
+  const [selectedSemester, setSelectedSemester] = useState<string | null>(null);
+  const [editedCourses, setEditedCourses] = useState<{
+    [key: string]: CourseWithUE;
+  }>({});
+  const [hasChanges, setHasChanges] = useState(false);
 
   if (isLoading) {
     return (
@@ -191,148 +41,266 @@ export default function ClasseId() {
       </div>
     );
   }
+  if (courses.length === 0)
+    return <div>No semesters found. Please run the setup script.</div>;
+
+  const handleSemesterChange = (semesterId: string) => {
+    setSelectedSemester(semesterId);
+    setEditedCourses({});
+    setHasChanges(false);
+  };
+
+  const handleCourseChange = (
+    courseId: string,
+    field: keyof CourseWithUE,
+    value: unknown
+  ) => {
+    setEditedCourses((prev) => ({
+      ...prev,
+      [courseId]: {
+        ...prev[courseId],
+        [field]: value,
+      },
+    }));
+    setHasChanges(true);
+  };
+
+  const saveChanges = async () => {
+    for (const [courseId, courseData] of Object.entries(editedCourses)) {
+      updateCourse({ courseId, courseData });
+    }
+    setEditedCourses({});
+    setHasChanges(false);
+    toast.success("All changes saved successfully");
+  };
+
+  const currentSemester = courses.find((sem) => sem.id === selectedSemester);
 
   return (
     <div className="container mx-auto p-4">
-      <Tabs defaultValue="allCourses">
-        <TabsList>
+      <h1 className="text-2xl font-bold mb-4">Course Management</h1>
+
+      <Select onValueChange={handleSemesterChange}>
+        <SelectTrigger className="w-[200px] mb-4">
+          <SelectValue placeholder="Select Semester" />
+        </SelectTrigger>
+        <SelectContent>
           {courses.map((semester) => (
-            <TabsTrigger key={semester.id} value={semester.id}>
+            <SelectItem key={semester.id} value={semester.id}>
               {semester.name}
-            </TabsTrigger>
+            </SelectItem>
           ))}
-        </TabsList>
+        </SelectContent>
+      </Select>
 
-        {courses.map((semester) => (
-          <TabsContent key={semester.id} value={semester.id}>
-            <div className="mb-4">
-              <Button
-                onClick={() => handleAddCourse(semester.id)}
-                disabled={isAddingCourse}
-              >
-                {isAddingCourse ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Plus className="mr-2 h-4 w-4" />
-                )}
-                Add Course
-              </Button>
-            </div>
+      {currentSemester && (
+        <div className="space-y-4">
+          {currentSemester.courses.map((course) => (
+            <Card key={course.id}>
+              <CardHeader>
+                <CardTitle>{course.enseignement}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor={`codeUE-${course.id}`}>Code UE</Label>
+                    <Input
+                      id={`codeUE-${course.id}`}
+                      value={editedCourses[course.id]?.codeUE ?? course.codeUE}
+                      onChange={(e) =>
+                        handleCourseChange(course.id, "codeUE", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`codeEC-${course.id}`}>Code EC</Label>
+                    <Input
+                      id={`codeEC-${course.id}`}
+                      value={editedCourses[course.id]?.codeEC ?? course.codeEC}
+                      onChange={(e) =>
+                        handleCourseChange(course.id, "codeEC", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`contenu-${course.id}`}>Contenu</Label>
+                    <Input
+                      id={`contenu-${course.id}`}
+                      value={
+                        editedCourses[course.id]?.contenu ?? course.contenu
+                      }
+                      onChange={(e) =>
+                        handleCourseChange(course.id, "contenu", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`enseignement-${course.id}`}>
+                      Enseignement
+                    </Label>
+                    <Input
+                      id={`enseignement-${course.id}`}
+                      value={
+                        editedCourses[course.id]?.enseignement ??
+                        course.enseignement
+                      }
+                      onChange={(e) =>
+                        handleCourseChange(
+                          course.id,
+                          "enseignement",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`cours-${course.id}`}>Cours</Label>
+                    <Input
+                      id={`cours-${course.id}`}
+                      type="number"
+                      value={editedCourses[course.id]?.cours ?? course.cours}
+                      onChange={(e) =>
+                        handleCourseChange(
+                          course.id,
+                          "cours",
+                          parseInt(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`tpTd-${course.id}`}>TP/TD</Label>
+                    <Input
+                      id={`tpTd-${course.id}`}
+                      type="number"
+                      value={editedCourses[course.id]?.tpTd ?? course.tpTd}
+                      onChange={(e) =>
+                        handleCourseChange(
+                          course.id,
+                          "tpTd",
+                          parseInt(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`sp-${course.id}`}>SP</Label>
+                    <Input
+                      id={`sp-${course.id}`}
+                      type="number"
+                      value={editedCourses[course.id]?.sp ?? course.sp}
+                      onChange={(e) =>
+                        handleCourseChange(
+                          course.id,
+                          "sp",
+                          parseInt(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`tpe-${course.id}`}>TPE</Label>
+                    <Input
+                      id={`tpe-${course.id}`}
+                      type="number"
+                      value={editedCourses[course.id]?.tpe ?? course.tpe}
+                      onChange={(e) =>
+                        handleCourseChange(
+                          course.id,
+                          "tpe",
+                          parseInt(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`ctt-${course.id}`}>CTT</Label>
+                    <Input
+                      id={`ctt-${course.id}`}
+                      type="number"
+                      value={editedCourses[course.id]?.ctt ?? course.ctt}
+                      onChange={(e) =>
+                        handleCourseChange(
+                          course.id,
+                          "ctt",
+                          parseInt(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`cect-${course.id}`}>CECT</Label>
+                    <Input
+                      id={`cect-${course.id}`}
+                      type="number"
+                      value={editedCourses[course.id]?.cect ?? course.cect}
+                      onChange={(e) =>
+                        handleCourseChange(
+                          course.id,
+                          "cect",
+                          parseInt(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id={`cc-${course.id}`}
+                      checked={editedCourses[course.id]?.cc ?? course.cc}
+                      onCheckedChange={(checked) =>
+                        handleCourseChange(course.id, "cc", checked)
+                      }
+                    />
+                    <Label htmlFor={`cc-${course.id}`}>CC</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id={`et-${course.id}`}
+                      checked={editedCourses[course.id]?.et ?? course.et}
+                      onCheckedChange={(checked) =>
+                        handleCourseChange(course.id, "et", checked)
+                      }
+                    />
+                    <Label htmlFor={`et-${course.id}`}>ET</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id={`ccEt-${course.id}`}
+                      checked={editedCourses[course.id]?.ccEt ?? course.ccEt}
+                      onCheckedChange={(checked) =>
+                        handleCourseChange(course.id, "ccEt", checked)
+                      }
+                    />
+                    <Label htmlFor={`ccEt-${course.id}`}>CC/ET</Label>
+                  </div>
+                  <div>
+                    <Label htmlFor={`professor-${course.id}`}>Professor</Label>
+                    <Input
+                      id={`professor-${course.id}`}
+                      value={
+                        editedCourses[course.id]?.professor ?? course.professor
+                      }
+                      onChange={(e) =>
+                        handleCourseChange(
+                          course.id,
+                          "professor",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Code UE</TableHead>
-                  <TableHead>Code EC</TableHead>
-                  <TableHead>Contenu</TableHead>
-                  <TableHead>Enseignement</TableHead>
-                  <TableHead>Professor</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {semester.courses.map((course) => (
-                  <TableRow key={course.id}>
-                    {editingCourse && editingCourse.id === course.id ? (
-                      <>
-                        <TableCell>
-                          <Input
-                            value={editingCourse.codeUE}
-                            onChange={(e) =>
-                              setEditingCourse((prev) =>
-                                prev ? { ...prev, codeUE: e.target.value } : null
-                              )
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={editingCourse.codeEC}
-                            onChange={(e) =>
-                              setEditingCourse((prev) =>
-                                prev ? { ...prev, codeEC: e.target.value } : null
-                              )
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={editingCourse.contenu}
-                            onChange={(e) =>
-                              setEditingCourse((prev) =>
-                                prev ? { ...prev, contenu: e.target.value } : null
-                              )
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={editingCourse.enseignement}
-                            onChange={(e) =>
-                              setEditingCourse((prev) =>
-                                prev ? { ...prev, enseignement: e.target.value } : null
-                              )
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={editingCourse.professor}
-                            onChange={(e) =>
-                              setEditingCourse((prev) =>
-                                prev ? { ...prev, professor: e.target.value } : null
-                              )
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Button onClick={handleSaveCourse} className="mr-2">
-                            <Save className="mr-2 h-4 w-4" /> Save
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            onClick={() => setEditingCourse(null)}
-                          >
-                            <X className="mr-2 h-4 w-4" /> Cancel
-                          </Button>
-                        </TableCell>
-                      </>
-                    ) : (
-                      <>
-                        <TableCell>{course.codeUE}</TableCell>
-                        <TableCell>{course.codeEC}</TableCell>
-                        <TableCell>{course.contenu}</TableCell>
-                        <TableCell>{course.enseignement}</TableCell>
-                        <TableCell>{course.professor}</TableCell>
-                        <TableCell>
-                          <Button
-                            onClick={() => setEditingCourse(course)}
-                            className="mr-2"
-                          >
-                            <Edit2 className="mr-2 h-4 w-4" /> Edit
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            onClick={() => handleDeleteCourse(course.id)}
-                            disabled={isDeletingCourse}
-                          >
-                            {isDeletingCourse ? (
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                              <Trash2 className="mr-2 h-4 w-4" />
-                            )}
-                            Delete
-                          </Button>
-                        </TableCell>
-                      </>
-                    )}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TabsContent>
-        ))}
-      </Tabs>
+      {hasChanges && (
+        <Button className="mt-4" onClick={saveChanges}>
+          Save Changes
+        </Button>
+      )}
     </div>
   );
 }

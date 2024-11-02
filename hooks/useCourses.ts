@@ -10,7 +10,7 @@ export function useCourses() {
   const coursesQuery = useQuery<SemesterWithCourses[]>({
     queryKey: ["courses"],
     queryFn: async () => {
-      const response = await fetch("/api/courses");
+      const response = await fetch("/api/admin/courses");
       if (!response.ok) {
         throw new Error("Failed to fetch courses");
       }

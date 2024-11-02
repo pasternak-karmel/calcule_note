@@ -31,7 +31,6 @@ export const users = pgTable("user", {
 
 export const InsertUserSchema = createInsertSchema(users);
 
-// Table des semestres
 export const semesters = pgTable("semesters", {
   id: text("id")
     .primaryKey()
@@ -41,7 +40,6 @@ export const semesters = pgTable("semesters", {
   endDate: timestamp("end_date"),
 });
 
-// Table des classes
 export const classes = pgTable("classes", {
   id: text("id")
     .primaryKey()
@@ -50,7 +48,6 @@ export const classes = pgTable("classes", {
   description: text("description"),
 });
 
-// Table des unités d'enseignement (UE)
 export const ue = pgTable("ue", {
   id: text("id")
     .primaryKey()
@@ -63,7 +60,6 @@ export const ue = pgTable("ue", {
   semesterId: text("semester_id").references(() => semesters.id), // Relation avec le semestre
 });
 
-// Table des éléments constitutifs (EC)
 export const ec = pgTable("ec", {
   id: text("id")
     .primaryKey()
@@ -86,12 +82,10 @@ export const ec = pgTable("ec", {
   ccEt: boolean("cc_et").default(false),
 });
 
-// Create Zod schemas for type validation
 export const InsertECSchema = createInsertSchema(ec);
 export type EC = typeof ec.$inferSelect;
 export type NewEC = typeof ec.$inferInsert;
 
-// You might also want to create a combined type for the frontend
 export type CourseWithUE = {
   id: string;
   codeUE: string;
@@ -116,7 +110,6 @@ export type SemesterWithCourses = {
   courses: CourseWithUE[];
 }; 
 
-// Table de liaison entre les professeurs et les EC (responsabilités)
 export const professorEcAssignments = pgTable("professor_ec_assignments", {
   id: text("id")
     .primaryKey()
