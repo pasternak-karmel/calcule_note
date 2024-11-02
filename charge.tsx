@@ -25,16 +25,16 @@ timeline du projet
 -inscription et connexion pages (done)
     -
 -admin
-    -Information de connexion (etudiant professeur)
+    -Information de connexion (etudiant professeur) (karmel) later
     -gestion de la structure de lecole
-        -les classes (LMD) (jennifer)
+        -les classes (LMD) (jennifer) (fais par carmel) remain insert in db
         -Ue
         -eu
         -credit
-    -Gestion des professeurs
+    -Gestion des professeurs  (laurinda)
         -Ajout et suppression des professeurs
         -Attribution des classes
-    -Gestion des étudiants
+    -Gestion des étudiants (alphonsine)
         -Ajout et suppression des étudiants
         -Gestion de la conduite
     -Rapport

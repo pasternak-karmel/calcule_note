@@ -76,7 +76,7 @@ export const login = async (
   if (!passwordsMatch) return { error: "Wrong password !" };
 
   try {
-    await createSession(existingUser.id);
+    await createSession(existingUser.id, "admin");
 
     if (!callbackUrl) {
       redirect("/dashboard");

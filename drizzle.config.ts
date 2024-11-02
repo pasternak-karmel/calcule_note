@@ -7,7 +7,8 @@ export default defineConfig({
   schema: "db/schema.ts",
   out: "./drizzle",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    // url: process.env.DATABASE_URL!,
+    url: "postgresql://calcule_note_owner:0gB5LdeUjoAn@ep-still-term-a5lfsaq9.us-east-2.aws.neon.tech/calcule_note?sslmode=require",
   },
   verbose: true,
   strict: true,
