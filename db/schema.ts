@@ -71,8 +71,50 @@ export const ec = pgTable("ec", {
   name: text("name").notNull(),
   ueId: text("ue_id")
     .references(() => ue.id)
-    .notNull(), // Relation avec l'UE
+    .notNull(),
+  codeEC: text("code_ec").notNull(),
+  contenu: text("contenu").notNull(),
+  enseignement: text("enseignement").notNull(),
+  cours: integer("cours").default(0),
+  tpTd: integer("tp_td").default(0),
+  sp: integer("sp").default(0),
+  tpe: integer("tpe").default(0),
+  ctt: integer("ctt").default(0),
+  cect: integer("cect").default(0),
+  cc: boolean("cc").default(false),
+  et: boolean("et").default(false),
+  ccEt: boolean("cc_et").default(false),
 });
+
+// Create Zod schemas for type validation
+export const InsertECSchema = createInsertSchema(ec);
+export type EC = typeof ec.$inferSelect;
+export type NewEC = typeof ec.$inferInsert;
+
+// You might also want to create a combined type for the frontend
+export type CourseWithUE = {
+  id: string;
+  codeUE: string;
+  codeEC: string;
+  contenu: string;
+  enseignement: string;
+  cours: number;
+  tpTd: number;
+  sp: number;
+  tpe: number;
+  ctt: number;
+  cect: number;
+  cc: boolean;
+  et: boolean;
+  ccEt: boolean;
+  professor: string;
+};
+
+export type SemesterWithCourses = {
+  id: string;
+  name: string;
+  courses: CourseWithUE[];
+}; 
 
 // Table de liaison entre les professeurs et les EC (responsabilités)
 export const professorEcAssignments = pgTable("professor_ec_assignments", {
