@@ -37,7 +37,7 @@ const ActionsMenu = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => router.push(`/article/${articleId}`)}>
+        <DropdownMenuItem onClick={() => router.push(`/dashboard/classe/${articleId}`)}>
           Consulter les infos de la classe {nom}
         </DropdownMenuItem>
       </DropdownMenuContent>
