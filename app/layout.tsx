@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 import { Poppins } from "next/font/google";
+import { ReactQueryProviders } from "@/feature/reactQueryProviders";
+import { Toaster } from "sonner";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -26,10 +28,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${font.className} ${geistMono.variable} antialiased`}>
-        {children}
-      </body>
-    </html>
+    <ReactQueryProviders>
+      <html lang="en">
+        <body className={`${font.className} ${geistMono.variable} antialiased`}>
+          {children}
+          <Toaster />
+        </body>
+      </html>
+    </ReactQueryProviders>
   );
 }

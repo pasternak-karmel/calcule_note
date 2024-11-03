@@ -79,12 +79,9 @@ export const CreateLivreurSchema = z.object({
   }),
 });
 
-export const CreateTraductionSchema = z
-  .object({
-    nom: z.string({
-      message: "Veuillez entrez votre nom",
-    })
-  });
+export const CreateTraductionSchema = z.object({
+  nom: z.string().min(2, "Veuillez entrer le nom."),
+});
 
 export const meLivrer = z.object({
   name: z
