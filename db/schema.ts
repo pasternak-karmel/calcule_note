@@ -108,7 +108,7 @@ export type SemesterWithCourses = {
   id: string;
   name: string;
   courses: CourseWithUE[];
-}; 
+};
 
 export const professorEcAssignments = pgTable("professor_ec_assignments", {
   id: text("id")

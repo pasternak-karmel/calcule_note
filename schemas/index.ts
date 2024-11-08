@@ -83,76 +83,8 @@ export const CreateTraductionSchema = z.object({
   nom: z.string().min(2, "Veuillez entrer le nom."),
 });
 
-export const meLivrer = z.object({
-  name: z
-    .string()
-    .min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
-  email: z.string().email({ message: "Adresse email invalide" }),
-  phone: z.string().min(10, { message: "Numéro de téléphone invalide" }),
-  serviceType: z.string({
-    required_error: "Veuillez sélectionner un type de service",
-  }),
-  documentType: z.string({
-    required_error: "Veuillez sélectionner un type de document",
-  }),
-  sourceLanguage: z.string({
-    required_error: "Veuillez sélectionner la langue source",
-  }),
-  targetLanguage: z.string({
-    required_error: "Veuillez sélectionner la langue cible",
-  }),
-  deadline: z.string().optional(),
-  wordCount: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
-    message: "Veuillez entrer un nombre valide",
-  }),
-  additionalInfo: z.string().optional(),
-  termsAccepted: z.boolean().refine((val) => val === true, {
-    message: "Vous devez accepter les termes et conditions",
-  }),
-  deliveryAddress: z
-    .object({
-      departureAddress: z.string().optional(),
-      shippingAddress: z.string().optional(),
-    })
-    .optional(),
-});
-
-export const demandeDevis = z.object({
-  firstName: z
-    .string()
-    .min(2, { message: "Le prénom doit contenir au moins 2 caractères" }),
-  lastName: z
-    .string()
-    .min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
-  email: z.string().email({ message: "Adresse email invalide" }),
-  phone: z.string().min(10, { message: "Numéro de téléphone invalide" }),
-  country: z.string({
-    required_error: "Please select a country.",
-  }),
-  serviceType: z.string({
-    required_error: "Veuillez sélectionner un type de service",
-  }),
-  documentType: z.string({
-    required_error: "Veuillez sélectionner un type de document",
-  }),
-  sourceLanguage: z.string({
-    required_error: "Veuillez sélectionner la langue source",
-  }),
-  targetLanguage: z.string({
-    required_error: "Veuillez sélectionner la langue cible",
-  }),
-  deadline: z.string().optional(),
-  wordCount: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
-    message: "Veuillez entrer un nombre valide",
-  }),
-  additionalInfo: z.string().optional(),
-  termsAccepted: z.boolean().refine((val) => val === true, {
-    message: "Vous devez accepter les termes et conditions",
-  }),
-  deliveryAddress: z
-    .object({
-      departureAddress: z.string().optional(),
-      shippingAddress: z.string().optional(),
-    })
-    .optional(),
+export const CreateProfesseur = z.object({
+  nom: z.string(),
+  username: z.string(),
+  role: z.string().optional().default("professeur"),
 });
